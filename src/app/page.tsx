@@ -47,7 +47,6 @@ export default function Home() {
 
         const newWidth = Math.ceil(Math.min(screenWidth * 0.175, maxWidth));
         const newHeight = Math.ceil(newWidth * aspectRatio);
-        console.log(newWidth, newHeight);
 
         canvas?.setDimensions({ width: newWidth, height: newHeight });
         document.querySelectorAll("canvas")!.forEach((canvas) => {
@@ -69,7 +68,7 @@ export default function Home() {
         window.removeEventListener("resize", resizeCanvas);
       };
     }
-  }, [canvas]);
+  }, []);
 
   return (
     <section>

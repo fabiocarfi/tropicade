@@ -59,7 +59,6 @@ const Layers = ({ canvas }: LayerProps) => {
           const imgEl = new Image();
           imgEl.src = e.target?.result as string;
           imgEl.onload = function () {
-            // image is read;
             const imgWidth = imgEl.width;
             const imgHeight = imgEl.height;
 
@@ -210,9 +209,9 @@ const Layers = ({ canvas }: LayerProps) => {
         canvas.off("object:modified", handleLayerUpdate);
         canvas.off("object:removed", handleLayerUpdate);
 
-        canvas.on("selection:created", handleObjectSelection);
-        canvas.on("selection:updated", handleObjectSelection);
-        canvas.on("selection:cleared", () => setSelectedLayer(null));
+        canvas.off("selection:created", handleObjectSelection);
+        canvas.off("selection:updated", handleObjectSelection);
+        canvas.off("selection:cleared", () => setSelectedLayer(null));
       };
     }
   }, [canvas, handleLayerUpdate]);
