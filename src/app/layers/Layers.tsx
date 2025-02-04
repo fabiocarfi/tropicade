@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import NextImage from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   FabricImage,
   Canvas,
@@ -150,7 +150,7 @@ const Layers = ({ canvas }: LayerProps) => {
     });
   };
 
-  const handleLayerUpdate = () => {
+  const handleLayerUpdate = useCallback(() => {
     if (canvas) {
       canvas.updateZIndices!();
 
@@ -171,7 +171,7 @@ const Layers = ({ canvas }: LayerProps) => {
 
       setLayers([...objects].reverse());
     }
-  };
+  }, [canvas]);
 
   const handleObjectSelection = (
     e: Partial<TEvent<TPointerEvent>> & {
@@ -215,7 +215,7 @@ const Layers = ({ canvas }: LayerProps) => {
         canvas.on("selection:cleared", () => setSelectedLayer(null));
       };
     }
-  }, [canvas]);
+  }, [canvas, handleLayerUpdate]);
 
   return (
     <div className="">
