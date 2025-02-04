@@ -62,7 +62,7 @@ export default function Home() {
       };
 
       window.addEventListener("resize", resizeCanvas);
-
+      resizeCanvas();
       return () => {
         initCanvas.dispose();
         window.removeEventListener("resize", resizeCanvas);
