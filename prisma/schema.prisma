@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Image {
+  id              String         @id @default(cuid())
+  width           Int
+  height          Int
+  imageUrl        String
+  Configuration   Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  configurationId String?
+
+  @@index([configurationId])
+}
+
+model Configuration {
+  id              String   @id @default(cuid())
+  croppedImageUrl String?
+  images          Image[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

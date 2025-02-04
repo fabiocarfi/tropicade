@@ -1,101 +1,101 @@
+"use client";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import VerticalPaddingWrapper from "@/components/VerticalPaddingWrapper";
+import Layers from "./layers/Layers";
+
+import { useRef, useState, useEffect } from "react";
+import { Canvas } from "fabric";
 import Image from "next/image";
+import { TshirtColors, TshirtColorsType } from "../lib/tshirts-data";
+import Options from "./options/Options";
+
+interface CustomCanvas extends Canvas {
+  updateZIndices?: () => void;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvas, setCanvas] = useState<Canvas | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const [allTShirtColors, setAllTShirtColors] = useState<
+    TshirtColorsType[] | null
+  >([]);
+
+  const [currentTShirtColor, setCurrentTShirtColor] =
+    useState<TshirtColorsType>(TshirtColors[0]);
+
+  useEffect(() => {
+    setAllTShirtColors(TshirtColors);
+  }, []);
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const initCanvas: CustomCanvas = new Canvas(canvasRef.current, {
+        width: 330,
+        height: 370,
+        backgroundColor: "transparent",
+      });
+
+      initCanvas.renderAll();
+      setCanvas(initCanvas);
+
+      const resizeCanvas = () => {
+        const screenWidth = window.innerWidth;
+        const maxWidth = 330;
+        const maxHeight = 370;
+        const aspectRatio = maxHeight / maxWidth;
+
+        const newWidth = Math.ceil(Math.min(screenWidth * 0.175, maxWidth));
+        const newHeight = Math.ceil(newWidth * aspectRatio);
+        console.log(newWidth, newHeight);
+
+        canvas?.setDimensions({ width: newWidth, height: newHeight });
+        document.querySelectorAll("canvas")!.forEach((canvas) => {
+          canvas.style.width = `${newWidth}px`;
+          canvas.style.height = `${newHeight}px`;
+        });
+
+        const canvasWrapperDiv = document.querySelector<HTMLDivElement>(
+          '[data-fabric="wrapper"]'
+        );
+        canvasWrapperDiv!.style.width = `${newWidth}px`;
+        canvasWrapperDiv!.style.height = `${newHeight}px`;
+      };
+
+      window.addEventListener("resize", resizeCanvas);
+
+      return () => {
+        initCanvas.dispose();
+        window.removeEventListener("resize", resizeCanvas);
+      };
+    }
+  }, [canvas]);
+
+  return (
+    <section>
+      <MaxWidthWrapper>
+        <VerticalPaddingWrapper>
+          <div className="grid grid-cols-1 xl:grid-cols-[2.5fr_4fr_3fr] gap-4 md:gap-8 min-h-[auto] xl:min-h-[650px]">
+            <Layers canvas={canvas} />
+
+            <div className="relative overflow-hidden w-full h-full flex items-center justify-center min-h-[300px] sm:min-h-[450px] md:min-h-[650px] xl:min-h-[auto]">
+              <canvas className="relative z-40 ]" ref={canvasRef} />
+              <Image
+                width={606}
+                height={606}
+                className="w-full h-full object-contain absolute rounded-md"
+                src={currentTShirtColor.imgUrl}
+                alt="Your design"
+              />
+            </div>
+            <Options
+              allTShirtColors={allTShirtColors}
+              currentTShirtColor={currentTShirtColor}
+              setCurrentTShirtColor={setCurrentTShirtColor}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          </div>
+        </VerticalPaddingWrapper>
+      </MaxWidthWrapper>
+    </section>
   );
 }
