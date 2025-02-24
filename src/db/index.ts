@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -16,4 +17,5 @@ if (process.env.NODE_ENV === "production") {
   prisma = global.cachedPrisma;
 }
 
-export const db = prisma;
+export default prisma;
+export { PrismaClientKnownRequestError };

@@ -39,8 +39,36 @@
 
 @font-face {
   font-family: "lufga";
-  src: url("/fonts/LufgaBlack.ttf") format("ttf");
+  src: url("/fonts/LufgaBlack.ttf") format("truetype");
   font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "bronco";
+  src: url("/fonts/bronco/bronco.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "cooper";
+  src: url("/fonts/cooper/cooper.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "sardonyx";
+  src: url("/fonts/sardonyx/sardonyx.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "abril";
+  src: url("/fonts/abril/abril.ttf") format("truetype");
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -122,4 +150,13 @@ label {
   font-size: 14px;
   letter-spacing: 2px;
   text-transform: uppercase;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

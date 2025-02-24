@@ -9,7 +9,7 @@ const VerticalPaddingWrapper = ({
   children: ReactNode;
 }) => {
   return (
-    <div className={cn("py-16 md:py-20  lg:py-24", className)}>{children}</div>
+    <div className={cn("py-10 md:py-14  lg:py-16", className)}>{children}</div>
   );
 };
 
