@@ -19,7 +19,7 @@ const CustomCarousel = ({ bgCanvas }: { bgCanvas: Canvas | null }) => {
   useEffect(() => {
     if (!bgCanvas) return;
     if (activeBgImage.slug === "none") {
-      if (bgCanvas.getActiveObject()) bgCanvas.clear();
+      bgCanvas.clear();
       bgCanvas.renderAll();
     } else {
       bgCanvas.clear();
