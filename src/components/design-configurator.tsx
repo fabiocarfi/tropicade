@@ -68,10 +68,11 @@ export default function DesignConfigurator() {
       const aspectRatio = maxHeight / maxWidth;
       let newWidth = maxWidth;
       let newHeight = maxHeight;
+      const viewportWidth = window.visualViewport?.width || window.innerWidth;
 
-      if (window.innerWidth < 480 && window.innerWidth > 400) newWidth = 230;
-      if (window.innerWidth < 400 && window.innerWidth > 360) newWidth = 210;
-      if (window.innerWidth < 360) newWidth = 200;
+      if (viewportWidth < 480 && viewportWidth > 400) newWidth = 230;
+      if (viewportWidth < 400 && viewportWidth > 360) newWidth = 210;
+      if (viewportWidth < 360) newWidth = 200;
 
       newHeight = aspectRatio * newWidth;
 
