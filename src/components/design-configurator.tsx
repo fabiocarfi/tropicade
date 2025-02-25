@@ -14,6 +14,7 @@ import CustomCarousel from "./custom-carousel";
 import DesignLayers from "./design-layers";
 import DesignOptions from "./design-options";
 import Navbar from "./header/navbar";
+
 interface CustomCanvas extends Canvas {
   updateZIndices?: () => void;
 }
@@ -34,16 +35,36 @@ export default function DesignConfigurator() {
   const [selectedSize, setSelectedSize] = useState(TSHIRT_SIZES[3]);
 
   useEffect(() => {
+    function getCanvasSize() {
+      const maxWidth = 300;
+      const maxHeight = 340;
+      const viewportWidth = window.visualViewport?.width || window.innerWidth;
+      let newWidth = maxWidth;
+      const aspectRatio = maxHeight / maxWidth;
+
+      if (viewportWidth < 480 && viewportWidth > 400) newWidth = 230;
+      if (viewportWidth < 400 && viewportWidth > 360) newWidth = 210;
+      if (viewportWidth < 360) newWidth = 200;
+
+      const newHeight = aspectRatio * newWidth;
+      const canvasSize = {
+        width: newWidth,
+        height: newHeight,
+      };
+
+      return canvasSize;
+    }
+
     if (canvasRef.current && bgCanvasRef.current) {
       const initCanvas: CustomCanvas = new Canvas(canvasRef.current, {
-        width: 330,
-        height: 370,
+        width: getCanvasSize().width || 330,
+        height: getCanvasSize().height || 370,
         backgroundColor: "transparent",
       });
 
       const bgInitCanvas: CustomCanvas = new Canvas(bgCanvasRef.current, {
-        width: 330,
-        height: 370,
+        width: getCanvasSize().width || 330,
+        height: getCanvasSize().height || 370,
         backgroundColor: "transparent",
       });
 
