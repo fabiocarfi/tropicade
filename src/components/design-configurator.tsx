@@ -115,7 +115,7 @@ export default function DesignConfigurator() {
       </MaxWidthWrapper>
       <MaxWidthWrapper>
         <VerticalPaddingWrapper>
-          <div className="grid grid-cols-1 xl:grid-cols-[2.5fr_4fr_2.5fr] gap-4 md:gap-8 min-h-[auto] xl:min-h-[650px]">
+          <div className="grid grid-cols-1 xl:grid-cols-[2.5fr_4fr_2.5fr] gap-4 md:gap-8 min-h-[auto] xl:min-h-[650px] max-w-[650px] mx-auto xl:max-w-[2000px]">
             <DesignLayers canvas={canvas} />
             <CustomCanvas
               canvasRef={canvasRef}

@@ -92,7 +92,7 @@ const Navbar = ({
           </div>
           <div>
             <button
-              className="hidden xs:block w-full py-4 min-h-[52px] bg-[#B6F074]  px-8 rounded-full"
+              className="hidden lg:block w-full py-4 min-h-[52px] bg-[#B6F074]  px-8 rounded-full"
               onClick={() => onOpenModel(true)}
             >
               <div className="flex items-center justify-center gap-2">
