@@ -7,6 +7,13 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    "font-abril",
+    "font-bronco",
+    "font-cooper",
+    "font-sardonyx",
+    "font-lufga",
+  ],
   theme: {
     extend: {
       screens: {

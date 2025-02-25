@@ -103,10 +103,7 @@ const TextSettings = ({ canvas }: { canvas: Canvas | null }) => {
 
   useEffect(() => {
     if (!canvas || !activeTextObject) return;
-    const center = activeTextObject.getCenterPoint();
-    console.log(center);
-    //const scale = activeTextObject.scaleX;
-    console.log();
+
     activeTextObject.set({
       text: currentInput,
       colorId: currentColor.id,
@@ -172,7 +169,7 @@ const TextSettings = ({ canvas }: { canvas: Canvas | null }) => {
                 onClick={() => setCurrentFontStyles(FONT_STYLES[index])}
                 key={font.id}
                 className={cn(
-                  `py-[10px] px-4 bg-white rounded-full border-[2px] border-solid border-gray-200 hover:border-gray-300 cursor-pointer uppercase font-bold} min-w-[70px] flex items-center justif-center ${font.options.tw}`,
+                  `py-[10px] px-4 bg-white rounded-full border-[2px] border-solid border-gray-200 hover:border-[#B6F074] cursor-pointer uppercase font-bold} min-w-[70px] flex items-center justify-center ${font.options.tw}`,
                   currentFontStyles.id === font.id ? "border-[#B6F074]" : ""
                 )}
               >

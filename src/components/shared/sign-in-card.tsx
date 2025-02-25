@@ -1,7 +1,6 @@
 "use client";
 import { signInWithCredentials } from "@/lib/actions/user.action";
 import { signUpDefaultValues } from "@/lib/constants";
-import { useSession } from "next-auth/react";
 import {
   Dispatch,
   FormEvent,
@@ -12,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useRouter } from "next/navigation";
 
 const SignInCard = ({
   onAuthDialog,
@@ -22,7 +22,7 @@ const SignInCard = ({
 }) => {
   const [formError, setFormError] = useState("");
   const [isPending, startTransition] = useTransition();
-  const { update } = useSession();
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     startTransition(async () => {
@@ -37,8 +37,8 @@ const SignInCard = ({
       const res = await signInWithCredentials(data);
 
       if (res && res.success) {
-        await update();
         onAuthDialog(false);
+        router.push("/thank-you");
       } else if (res && !res.success) {
         setFormError(res.message);
       }
@@ -91,12 +91,15 @@ const SignInCard = ({
             {formError && (
               <div className="text-center text-destructive">{formError}</div>
             )}
+
+            <div className="text-sm text-center text-muted-foreground flex gap-2 items-center justify-center">
+              Don&apos;t have an account?
+              <button onClick={() => onAuthStateChange("SIGNUP")}>
+                Sign Up
+              </button>
+            </div>
           </div>
         </form>
-        <div className="text-sm text-center text-muted-foreground flex gap-2 items-center justify-center">
-          Don&apos;t have an account?
-          <button onClick={() => onAuthStateChange("SIGNUP")}>Sign Up</button>
-        </div>
       </div>
     </div>
   );

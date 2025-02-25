@@ -14,7 +14,6 @@ import CustomCarousel from "./custom-carousel";
 import DesignLayers from "./design-layers";
 import DesignOptions from "./design-options";
 import Navbar from "./header/navbar";
-
 interface CustomCanvas extends Canvas {
   updateZIndices?: () => void;
 }
@@ -27,18 +26,12 @@ export default function DesignConfigurator() {
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
 
-  const [allTShirtColors, setAllTShirtColors] = useState<
-    TshirtColorsType[] | null
-  >([]);
+  const [allTShirtColors] = useState<TshirtColorsType[] | null>(TSHIRT_COLORS);
 
   const [currentTShirtColor, setCurrentTShirtColor] =
     useState<TshirtColorsType>(TSHIRT_COLORS[0]);
 
   const [selectedSize, setSelectedSize] = useState(TSHIRT_SIZES[3]);
-
-  useEffect(() => {
-    setAllTShirtColors(TSHIRT_COLORS);
-  }, []);
 
   useEffect(() => {
     if (canvasRef.current && bgCanvasRef.current) {

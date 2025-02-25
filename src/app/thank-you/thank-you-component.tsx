@@ -30,24 +30,20 @@ const ThankYouComponent = () => {
         const color =
           TSHIRT_COLORS.filter((x) => x.label === shirtColor) ||
           "/tshirts/white.png";
-        console.log("color", color);
         setUserData({
           image,
           shirtSize,
           shirtColor: color[0].imgUrl,
         });
-        console.log(config);
       }
     })();
   }, [session]);
-
-  if (!userData) return <div>Loading...</div>;
 
   return (
     <section className="min-h-[100vh] min-w-[100vw] flex items-center justify-center">
       <div className="p-6 md:p-10 rounded-lg shadow-lg bg-white flex flex-col gap-4 text-center">
         <div className="flex items-center justify-center relative">
-          {userData && userData.image ? (
+          {userData && userData.image && userData.shirtColor ? (
             <div className="relative flex items-top justify-center">
               <Image
                 src={userData?.shirtColor}

@@ -4,6 +4,7 @@ import { addConfigurationSchema } from "@/lib/validators";
 import { AddConfigurationType } from "@/types";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { formatError } from "../utils";
+import { cookies } from "next/headers";
 
 export async function addNewConfiguration(
   data: AddConfigurationType,
@@ -16,36 +17,48 @@ export async function addNewConfiguration(
       shirtColor: data.shirtColor,
     });
 
-    if (!userEmail) throw new Error("Please provide user email");
     if (!configuration) throw new Error("Please provide valid data");
+    if (userEmail) {
+      const user = await prisma.user.findFirst({
+        where: {
+          email: userEmail,
+        },
+        select: { id: true },
+      });
+      if (!user) throw new Error("User not found");
+      const config = await prisma.config.upsert({
+        where: {
+          userId: user.id,
+        },
+        update: {
+          image: configuration.image,
+          shirtColor: configuration.shirtColor,
+          shirtSize: configuration.shirtSize,
+        },
+        create: {
+          userId: user.id,
+          image: configuration.image,
+          shirtColor: configuration.shirtColor,
+          shirtSize: configuration.shirtSize,
+        },
+      });
+      if (!config) throw new Error("Failed to create a config");
+      return { success: true, message: "Configuration created successfully" };
+    } else {
+      const config = await prisma.tempConfig.create({
+        data: {
+          image: configuration.image,
+          shirtColor: configuration.shirtColor,
+          shirtSize: configuration.shirtSize,
+        },
+      });
 
-    const user = await prisma.user.findFirst({
-      where: {
-        email: userEmail,
-      },
-      select: { id: true },
-    });
-
-    if (!user) throw new Error("User not found");
-
-    const config = await prisma.config.upsert({
-      where: {
-        userId: user.id,
-      },
-      update: {
-        image: configuration.image,
-        shirtColor: configuration.shirtColor,
-        shirtSize: configuration.shirtSize,
-      },
-      create: {
-        userId: user.id,
-        image: configuration.image,
-        shirtColor: configuration.shirtColor,
-        shirtSize: configuration.shirtSize,
-      },
-    });
-    if (!config) throw new Error("Failed to create a config");
-    return { success: true, message: "Configuration created successfully" };
+      return {
+        success: true,
+        message: "Configuration created successfully",
+        configId: config.id,
+      };
+    }
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -76,4 +89,9 @@ export async function getConfiguration(email: string) {
     }
     return { success: false, message: formatError(error) };
   }
+}
+
+export async function setConfigId(cookie: string) {
+  const cookieStore = await cookies();
+  cookieStore.set("configId", cookie);
 }

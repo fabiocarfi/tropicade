@@ -313,12 +313,23 @@ export const cornerStyles = {
 //font-bronco
 
 export const signInDefaultValues = {
-  email: "admin@example.com",
-  password: "12345678",
+  email: "",
+  password: "",
 };
 
 export const signUpDefaultValues = {
-  name: "Admin",
-  email: "admin@example.com",
-  password: "12345678",
+  name: "",
+  email: "",
+  password: "",
 };
+
+// export const signInDefaultValues = {
+//   email: "admin@example.com",
+//   password: "12345678",
+// };
+
+// export const signUpDefaultValues = {
+//   name: "Admin",
+//   email: "admin@example.com",
+//   password: "12345678",
+// };

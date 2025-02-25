@@ -1,9 +1,17 @@
 "use client";
-
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Link from "next/link";
 import { SetStateAction } from "react";
 import MaxWidthWrapper from "../MaxWidthWrapper";
 import Logo from "./logo";
+import { MenuIcon } from "lucide-react";
 
 type NavlinkType = {
   title: string;
@@ -41,7 +49,7 @@ const Navbar = ({
   ];
 
   return (
-    <nav className="py-5 md:py-6">
+    <nav className="py-5 md:py-4">
       <MaxWidthWrapper>
         <div className="flex justify-between align-middle">
           <Link href={"/"} className="hidden xs:block">
@@ -56,6 +64,31 @@ const Navbar = ({
                 {navlink.title}
               </Link>
             ))}
+          </div>
+          <div className="flex lg:hidden items-center justify-end w-full">
+            <Sheet>
+              <SheetTrigger>
+                <MenuIcon className="w-6 h-6" />
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle></SheetTitle>
+                  <SheetDescription>
+                    <div className="flex flex-col  gap-6 font-[15px] items-center justify-center py-8">
+                      {navlinks.map((navlink) => (
+                        <Link
+                          href={navlink.href}
+                          key={navlink.slug}
+                          className="text-primary"
+                        >
+                          {navlink.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
           </div>
           <div>
             <button
