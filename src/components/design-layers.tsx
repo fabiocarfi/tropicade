@@ -29,50 +29,117 @@ const DesignLayers = ({ canvas }: LayerProps) => {
   const [layers, setLayers] = useState<Layer[]>([]);
   const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target?.files?.[0];
+  //   if (file && canvas) {
+  //     const fileReader = new FileReader();
+  //     fileReader.onload = function (e) {
+  //       if (e.target?.result) {
+  //         const imgEl = new Image();
+  //         imgEl.src = e.target?.result as string;
+  //         imgEl.onload = function () {
+  //           const imgWidth = imgEl.width;
+  //           const imgHeight = imgEl.height;
+
+  //           const maxWidth = canvas.width * 0.5;
+  //           const maxHeight = canvas.height * 0.5;
+
+  //           const scale = Math.min(
+  //             maxWidth / imgWidth,
+  //             maxHeight / imgHeight,
+  //             1
+  //           );
+
+  //           const fabricImage = new FabricImageWithImgUrl(imgEl, {
+  //             left: canvas.width / 2,
+  //             top: canvas.height / 2,
+  //             scaleX: scale,
+  //             scaleY: scale,
+  //             originX: "center",
+  //             originY: "center",
+  //             cornerColor: "#B6F074",
+  //             borderColor: "#B6F074",
+  //             cornerStyle: "circle",
+  //             cornerStrokeColor: "#B6F074",
+  //             transparentCorners: false,
+  //           });
+
+  //           fabricImage.imgUrl = imgEl.src;
+  //           canvas.add(fabricImage);
+  //           canvas.renderAll();
+  //         };
+  //       }
+  //     };
+
+  //     fileReader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target?.files?.[0];
-    if (file && canvas) {
-      const fileReader = new FileReader();
-      fileReader.onload = function (e) {
-        if (e.target?.result) {
-          const imgEl = new Image();
-          imgEl.src = e.target?.result as string;
-          imgEl.onload = function () {
-            const imgWidth = imgEl.width;
-            const imgHeight = imgEl.height;
+    if (!file || !canvas) return;
 
-            const maxWidth = canvas.width * 0.5;
-            const maxHeight = canvas.height * 0.5;
+    const fileReader = new FileReader();
 
-            const scale = Math.min(
-              maxWidth / imgWidth,
-              maxHeight / imgHeight,
-              1
-            );
+    fileReader.onload = async function (e) {
+      if (!e.target?.result) return;
 
-            const fabricImage = new FabricImageWithImgUrl(imgEl, {
-              left: canvas.width / 2,
-              top: canvas.height / 2,
-              scaleX: scale,
-              scaleY: scale,
-              originX: "center",
-              originY: "center",
-              cornerColor: "#B6F074",
-              borderColor: "#B6F074",
-              cornerStyle: "circle",
-              cornerStrokeColor: "#B6F074",
-              transparentCorners: false,
-            });
+      try {
+        // const formData = new FormData();
+        // formData.append("image_file", file);
+        // formData.append("size", "auto");
 
-            fabricImage.imgUrl = imgEl.src;
-            canvas.add(fabricImage);
-            canvas.renderAll();
-          };
-        }
-      };
+        // const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+        //   method: "POST",
+        //   headers: {
+        //     "X-Api-Key": "oYXLNexhdwHpDUTQnjSdsuDe",
+        //   },
+        //   body: formData,
+        // });
 
-      fileReader.readAsDataURL(file);
-    }
+        // if (!response.ok) throw new Error("Failed to remove background");
+
+        // const blob = await response.blob();
+        // const objectURL = URL.createObjectURL(blob);
+
+        // const imgEl = new Image();
+        // imgEl.src = objectURL;
+
+        // when not using the api
+        const imgEl = new Image();
+        imgEl.src = e.target?.result as string;
+
+        imgEl.onload = function () {
+          const imgWidth = imgEl.width;
+          const imgHeight = imgEl.height;
+          const maxWidth = canvas.width * 0.5;
+          const maxHeight = canvas.height * 0.5;
+          const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
+
+          const fabricImage = new FabricImageWithImgUrl(imgEl, {
+            left: canvas.width / 2,
+            top: canvas.height / 2,
+            scaleX: scale,
+            scaleY: scale,
+            originX: "center",
+            originY: "center",
+            cornerColor: "#B6F074",
+            borderColor: "#B6F074",
+            cornerStyle: "circle",
+            cornerStrokeColor: "#B6F074",
+            transparentCorners: false,
+          });
+
+          fabricImage.imgUrl = imgEl.src;
+          canvas.add(fabricImage);
+          canvas.renderAll();
+        };
+      } catch (error) {
+        console.error("Error processing image:", error);
+      }
+    };
+
+    fileReader.readAsDataURL(file);
   };
 
   // add id to objects
@@ -142,7 +209,8 @@ const DesignLayers = ({ canvas }: LayerProps) => {
           (obj) =>
             !(
               obj.id!.startsWith("vertical-") ||
-              obj.id!.startsWith("horizontal-")
+              obj.id!.startsWith("horizontal-") ||
+              obj.id!.startsWith("text_")
             )
         )
         .map((obj) => ({

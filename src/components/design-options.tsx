@@ -9,7 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TshirtColorsType, TshirtSizesType } from "@/types";
 import { Canvas } from "fabric";
 import Image from "next/image";
-import TextSettings from "./text-settings";
+import PrimaryText from "./primary-text";
+import SecondaryText from "./secondary-text";
+import BottomText from "./bottom-text";
 
 const DesignOptions = ({
   allTShirtColors,
@@ -218,8 +220,12 @@ const DesignOptions = ({
         <TabsContent value="text">
           <div className="p-4 bg-white rounded-[40px]">
             <h3 className="text-[24px] ">T-Shirt Text</h3>
-            <div className="flex flex-col gap-4 mt-4">
-              <TextSettings canvas={canvas} />
+            <div className=" mt-4">
+              <div className="flex flex-col gap-6">
+                <PrimaryText canvas={canvas} />
+                <SecondaryText canvas={canvas} />
+                <BottomText canvas={canvas} />
+              </div>
             </div>
           </div>
         </TabsContent>
