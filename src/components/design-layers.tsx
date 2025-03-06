@@ -85,29 +85,29 @@ const DesignLayers = ({ canvas }: LayerProps) => {
       if (!e.target?.result) return;
 
       try {
-        // const formData = new FormData();
-        // formData.append("image_file", file);
-        // formData.append("size", "auto");
+        const formData = new FormData();
+        formData.append("image_file", file);
+        formData.append("size", "auto");
 
-        // const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-        //   method: "POST",
-        //   headers: {
-        //     "X-Api-Key": "oYXLNexhdwHpDUTQnjSdsuDe",
-        //   },
-        //   body: formData,
-        // });
+        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+          method: "POST",
+          headers: {
+            "X-Api-Key": "oYXLNexhdwHpDUTQnjSdsuDe",
+          },
+          body: formData,
+        });
 
-        // if (!response.ok) throw new Error("Failed to remove background");
+        if (!response.ok) throw new Error("Failed to remove background");
 
-        // const blob = await response.blob();
-        // const objectURL = URL.createObjectURL(blob);
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
 
-        // const imgEl = new Image();
-        // imgEl.src = objectURL;
+        const imgEl = new Image();
+        imgEl.src = objectURL;
 
         // when not using the api
-        const imgEl = new Image();
-        imgEl.src = e.target?.result as string;
+        // const imgEl = new Image();
+        // imgEl.src = e.target?.result as string;
 
         imgEl.onload = function () {
           const imgWidth = imgEl.width;
