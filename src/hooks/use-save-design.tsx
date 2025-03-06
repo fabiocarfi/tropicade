@@ -94,7 +94,6 @@ export function useSaveDesign() {
       }
 
       const imgUrl = (await response.json()) as string;
-
       if (imgUrl) {
         const data = {
           image: imgUrl,

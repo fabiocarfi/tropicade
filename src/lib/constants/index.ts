@@ -1,3 +1,5 @@
+import { NavLink } from "@/types";
+
 export const BACKGROUND_EFFECTS = [
   {
     title: "None",
@@ -333,3 +335,26 @@ export const signUpDefaultValues = {
 //   email: "admin@example.com",
 //   password: "12345678",
 // };
+
+export const NAVLINKS: NavLink[] = [
+  {
+    title: "Services",
+    slug: "services",
+    href: "/",
+  },
+  {
+    title: "Experience",
+    slug: "experience",
+    href: "/",
+  },
+  {
+    title: "Purchase",
+    slug: "purchase",
+    href: "/",
+  },
+  {
+    title: "Configurate",
+    slug: "configurate",
+    href: "/",
+  },
+];

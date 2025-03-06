@@ -19,5 +19,5 @@ export const signUpFormSchema = z.object({
 export const addConfigurationSchema = z.object({
   image: z.string().min(3, "Image url is required"),
   shirtSize: z.string().min(1, "Size is required"),
-  shirtColor: z.string().min(3, "Color is required"),
+  shirtColor: z.string().min(1, "Color is required"),
 });

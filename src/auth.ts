@@ -5,6 +5,10 @@ import prisma from "@/db";
 import { cookies } from "next/headers";
 
 export const config = {
+  pages: {
+    signIn: "/sign-in",
+    error: "/sign-in",
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
@@ -49,17 +53,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async session({ session, user, trigger, token }: any) {
-      session.user.id = token.sub;
-      if (trigger === "update") {
-        session.user.name = user.name;
+    async session({ session, token }: any) {
+      // session.user.id = token.sub;
+      // session.user.role = token.role;
+      // if (trigger === "update") {
+      //   session.user.name = user.name;
+      //   session.user.role = token.role;
+      // }
+      // return session;
+
+      // Fetch latest user data from the database
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.sub },
+        select: { id: true, role: true, name: true, email: true },
+      });
+
+      if (dbUser) {
+        session.user.id = dbUser.id;
+        session.user.role = dbUser.role;
+        session.user.name = dbUser.name;
+        session.user.email = dbUser.email;
       }
+
       return session;
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ user, token, trigger }: any) {
       if (user) {
+        token.id = user.id;
+        token.role = user.role;
+
         if (trigger === "signIn" || trigger === "signUp") {
           const cookiesObject = await cookies();
           const configId = cookiesObject.get("configId")?.value;
@@ -80,7 +104,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     create: {
                       image: tempConfig.image,
                       shirtColor: tempConfig.shirtColor,
-                      shirtSize: tempConfig.shirtColor,
+                      shirtSize: tempConfig.shirtSize,
                     },
                   },
                 },

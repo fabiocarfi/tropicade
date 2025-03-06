@@ -196,7 +196,7 @@ const DesignLayers = ({ canvas }: LayerProps) => {
     const objects: CustomFabricObject[] = this.getObjects();
     objects.forEach((obj, index) => {
       addIdToObject(obj);
-      obj.zIndex = index;
+      obj.zIndex = obj.type === "text" ? 9999 + index : index;
     });
   };
 
@@ -269,6 +269,28 @@ const DesignLayers = ({ canvas }: LayerProps) => {
     }
   }, [canvas, handleLayerUpdate]);
 
+  //clear selection
+  useEffect(() => {
+    if (!canvas) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const activeObj = canvas.getActiveObjects();
+      if (!activeObj) return;
+      const clickedEl = e.target as HTMLElement;
+      const isCanvasClick = clickedEl.closest("canvas");
+      const isLayerClick = clickedEl.closest(".layer-item");
+      if (!isLayerClick && !isCanvasClick) {
+        canvas.discardActiveObject();
+        canvas.renderAll();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [canvas]);
+
   return (
     <div className="flex justify-center w-full flex-col h-full">
       {layers && layers.length > 0 && (
@@ -279,7 +301,7 @@ const DesignLayers = ({ canvas }: LayerProps) => {
                 key={layer.id}
                 onPointerDownCapture={() => onLayerSelect(layer.id!)}
                 className={cn(
-                  "flex gap-4 items-center justify-between cursor-pointer p-2 bg-[#F4F4F4] rounded-[100px] border-[2px] border-solid border-transparent",
+                  "layer-item flex gap-4 items-center justify-between cursor-pointer p-2 bg-[#F4F4F4] rounded-[100px] border-[2px] border-solid border-transparent",
                   layer.id === selectedLayer ? " border-[#B6F074]" : ""
                 )}
               >

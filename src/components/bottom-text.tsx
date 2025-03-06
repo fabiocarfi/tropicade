@@ -30,8 +30,6 @@ const BottomText = ({ canvas }: { canvas: Canvas | null }) => {
     };
 
     if (fabricText) {
-      const elHeight = fabricText.calcTextHeight();
-      console.log(elHeight);
       fabricText.set({
         top: canvas.height + Number(fontSize) / 5,
         text: currentInput,

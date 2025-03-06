@@ -5,6 +5,7 @@ import {
 } from "@/lib/validators";
 import { Canvas, FabricImage, FabricObject, Textbox } from "fabric";
 import { z } from "zod";
+import { DefaultSession } from "next-auth";
 
 export type TshirtColorsType = {
   label: string;
@@ -66,3 +67,21 @@ export class FabricImageWithImgUrl extends FabricImage {
 export type AddConfigurationType = z.infer<typeof addConfigurationSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
 export type SignUpForm = z.infer<typeof signUpFormSchema>;
+export type NavLink = {
+  title: string;
+  slug: string;
+  href: string;
+};
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"];
+  }
+
+  interface User {
+    role: string;
+  }
+}

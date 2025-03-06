@@ -91,6 +91,34 @@ export async function getConfiguration(email: string) {
   }
 }
 
+export async function getAllConfigurations() {
+  try {
+    const config = await prisma.config.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+    if (!config)
+      return {
+        success: true,
+        message: "No configurations found",
+        config: null,
+      };
+
+    return { success: true, message: "Configurations found", config: config };
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return { success: false, message: formatError(error) };
+  }
+}
+
 export async function setConfigId(cookie: string) {
   const cookieStore = await cookies();
   cookieStore.set("configId", cookie);
