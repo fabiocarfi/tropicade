@@ -1,6 +1,6 @@
 "use client";
 import { Canvas, TEvent, TPointerEvent } from "fabric";
-import { ArrowDown, ArrowUp, MoreVertical, Trash } from "lucide-react";
+import { ArrowDown, ArrowUp, Loader2, MoreVertical, Trash } from "lucide-react";
 import NextImage from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -28,54 +28,10 @@ const DesignLayers = ({ canvas }: LayerProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [layers, setLayers] = useState<Layer[]>([]);
   const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
-
-  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target?.files?.[0];
-  //   if (file && canvas) {
-  //     const fileReader = new FileReader();
-  //     fileReader.onload = function (e) {
-  //       if (e.target?.result) {
-  //         const imgEl = new Image();
-  //         imgEl.src = e.target?.result as string;
-  //         imgEl.onload = function () {
-  //           const imgWidth = imgEl.width;
-  //           const imgHeight = imgEl.height;
-
-  //           const maxWidth = canvas.width * 0.5;
-  //           const maxHeight = canvas.height * 0.5;
-
-  //           const scale = Math.min(
-  //             maxWidth / imgWidth,
-  //             maxHeight / imgHeight,
-  //             1
-  //           );
-
-  //           const fabricImage = new FabricImageWithImgUrl(imgEl, {
-  //             left: canvas.width / 2,
-  //             top: canvas.height / 2,
-  //             scaleX: scale,
-  //             scaleY: scale,
-  //             originX: "center",
-  //             originY: "center",
-  //             cornerColor: "#B6F074",
-  //             borderColor: "#B6F074",
-  //             cornerStyle: "circle",
-  //             cornerStrokeColor: "#B6F074",
-  //             transparentCorners: false,
-  //           });
-
-  //           fabricImage.imgUrl = imgEl.src;
-  //           canvas.add(fabricImage);
-  //           canvas.renderAll();
-  //         };
-  //       }
-  //     };
-
-  //     fileReader.readAsDataURL(file);
-  //   }
-  // };
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUploading(true);
     const file = e.target?.files?.[0];
     if (!file || !canvas) return;
 
@@ -137,6 +93,7 @@ const DesignLayers = ({ canvas }: LayerProps) => {
       } catch (error) {
         console.error("Error processing image:", error);
       }
+      setIsUploading(false);
     };
 
     fileReader.readAsDataURL(file);
@@ -369,8 +326,9 @@ const DesignLayers = ({ canvas }: LayerProps) => {
 
       <div className="max-w-[90%] mx-auto w-full">
         <button
+          disabled={isUploading}
           onClick={() => inputRef.current?.click()}
-          className=" w-full bg-[#B6F074]  rounded-[100px] px-3 py-2 min-h-[61px] flex justify-between items-center -translate-y-[50%]"
+          className=" w-full bg-[#B6F074]  rounded-[100px] px-3 py-2 min-h-[61px] flex justify-between items-center -translate-y-[50%] disabled:opacity-50 disabled:pointer-events-none"
         >
           <NextImage
             src={"/add-icon.svg"}
@@ -378,7 +336,10 @@ const DesignLayers = ({ canvas }: LayerProps) => {
             width={52}
             height={52}
           />
-          Add Photo
+          <div className="flex items-center justify-between gap-2">
+            {isUploading ? "Adding Photo" : "Add Photo"}
+            {isUploading && <Loader2 className="animate-spin" />}
+          </div>
           <span className="flex items-center justify-center gap-2 p-1 px-2 bg-[#FFFFFF99] rounded-full ">
             8x{" "}
             <NextImage
