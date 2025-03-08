@@ -1,5 +1,6 @@
 import {
   addConfigurationSchema,
+  resetPasswordFormSchema,
   signInFormSchema,
   signUpFormSchema,
 } from "@/lib/validators";
@@ -67,6 +68,7 @@ export class FabricImageWithImgUrl extends FabricImage {
 export type AddConfigurationType = z.infer<typeof addConfigurationSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
 export type SignUpForm = z.infer<typeof signUpFormSchema>;
+export type ResetPasswordForm = z.infer<typeof resetPasswordFormSchema>;
 export type NavLink = {
   title: string;
   slug: string;

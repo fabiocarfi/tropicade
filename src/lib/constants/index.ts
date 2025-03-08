@@ -175,6 +175,12 @@ export const TSHIRT_COLORS = [
     value: "#EAEAEA",
     imgUrl: "/tshirts/white.png",
   },
+  {
+    label: "Black",
+    slug: "black",
+    value: "#000",
+    imgUrl: "/tshirts/black.png",
+  },
 ];
 
 export const TEXT_COLORS = [
@@ -324,17 +330,6 @@ export const signUpDefaultValues = {
   email: "",
   password: "",
 };
-
-// export const signInDefaultValues = {
-//   email: "admin@example.com",
-//   password: "12345678",
-// };
-
-// export const signUpDefaultValues = {
-//   name: "Admin",
-//   email: "admin@example.com",
-//   password: "12345678",
-// };
 
 export const NAVLINKS: NavLink[] = [
   {

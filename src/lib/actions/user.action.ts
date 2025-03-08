@@ -1,11 +1,15 @@
 "use server";
 import { auth, signIn, signOut } from "@/auth";
 import prisma from "@/db";
-import { signInFormSchema, signUpFormSchema } from "@/lib/validators";
+import {
+  resetPasswordFormSchema,
+  signInFormSchema,
+  signUpFormSchema,
+} from "@/lib/validators";
 import { hashSync } from "bcrypt-ts-edge";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { formatError } from "../utils";
-import { SignInForm, SignUpForm } from "@/types";
+import { ResetPasswordForm, SignInForm, SignUpForm } from "@/types";
 import { revalidatePath } from "next/cache";
 
 export async function signInWithCredentials(
@@ -74,41 +78,6 @@ export async function signOutUser() {
   }
 }
 
-// export async function signUpUser(prevState: unknown, formData: FormData) {
-//   try {
-//     const user = signUpFormSchema.parse({
-//       name: formData.get("name"),
-//       email: formData.get("email"),
-//       password: formData.get("password"),
-//     });
-
-//     const plainPassword = user.password;
-//     user.password = hashSync(user.password, 10);
-//     await prisma.user.create({
-//       data: {
-//         name: user.name,
-//         email: user.email,
-//         password: user.password,
-//       },
-//     });
-
-//     await signIn("credentials", {
-//       email: user.email,
-//       password: plainPassword,
-//     });
-
-//     return { success: true, message: "User created successfully" };
-//   } catch (error) {
-//     if (isRedirectError(error)) {
-//       throw error;
-//     }
-//     return {
-//       success: false,
-//       message: formatError(error),
-//     };
-//   }
-// }
-
 export async function updateUserRole(
   userId: string,
   newRole: "user" | "admin"
@@ -136,4 +105,72 @@ export async function updateUserRole(
       message: formatError(error),
     };
   }
+}
+
+export async function requestPasswordReset(email: string) {
+  try {
+    const user = await prisma.user.findFirst({ where: { email } });
+    if (!user) return { error: "User not found" };
+    const token = crypto.randomUUID();
+    const expires = new Date(Date.now() + 3600000);
+
+    await prisma.verificationToken.create({
+      data: { identifier: email, token, expires },
+    });
+
+    // await sendResetEmail(email, token);
+    return { success: true, message: "Password reset link sent." };
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+//reset password
+
+export async function resetPassword(data: ResetPasswordForm) {
+  const validatedData = resetPasswordFormSchema.parse(data);
+  if (!validatedData) throw new Error("Invalid data");
+
+  const verificationToken = await prisma.verificationToken.findFirst({
+    where: {
+      token: data.token,
+    },
+  });
+
+  if (!verificationToken || verificationToken.expires < new Date())
+    throw new Error("Invalid or expired token");
+
+  const user = await prisma.user.findFirst({
+    where: { email: verificationToken.identifier },
+  });
+
+  if (!user) {
+    return { error: "User not found" };
+  }
+
+  const hashedPassword = await hashSync(data.password, 10);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+    },
+  });
+
+  await prisma.verificationToken.delete({
+    where: {
+      identifier_token: {
+        identifier: user.email,
+        token: verificationToken.token,
+      },
+    },
+  });
+
+  return { success: true, message: "Password reset successfully" };
 }
