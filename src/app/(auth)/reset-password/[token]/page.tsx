@@ -24,10 +24,11 @@ export default function ResetPasswordPage() {
       const data = {
         password: values.password as string,
         confirmPassword: values.confirmPassword as string,
+        token: token || "",
       };
-      const res = await resetPassword(token || "", data);
+      const res = await resetPassword(data);
       if (res && !res.success) {
-        setFormError(res.message);
+        //setFormError(res.message);
       }
     });
   };
